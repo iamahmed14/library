@@ -9,9 +9,25 @@ body{
 
 .header{
     background-color: white;
-    padding: 20px;
+    color: tomato;
+    padding: 40px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
 }
+.addBook{
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: large;
+    font-weight: bold;
+}
+.addBook:hover{
+    cursor: pointer;
+    background-color: yellowgreen;
+}
+
 .booksSection{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -21,8 +37,30 @@ body{
 }
 .bookCard{
     background-color: white;
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
     padding: 20px;
+    display: grid;
+    gap: 20px;
+    text-align: center;
+    border-left: 10px solid tomato;
+}
 
+.buttons{
+    text-align: right;
+}
+.remove, .toggle{
+    margin: 5px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: whitesmoke;
+}
+.remove:hover, .toggle:hover{
+    cursor: pointer;
+}
+.remove:hover{
+    background-color: tomato;
+}
+.toggle:hover{
+    background-color: yellowgreen;
 }
