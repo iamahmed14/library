@@ -1,48 +1,82 @@
+const booksSection = document.querySelector(".booksSection");
+const addBookButton = document.querySelector(".addBook");
+const form = document.querySelector(".form");
+const fade = document.querySelector(".fade");
+const submit = document.querySelector(".submit");
+
+addBookButton.onclick = showHideForm;
+fade.onclick = showHideForm;
+submit.onclick = addNewBook;
+
 function bookData(title, author, pages, haveRead) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.haveRead = haveRead;
-    this.info = function() {
-        if(haveRead)
-            return title + " by " + author + "," + pages + ", have read";
-        else
-            return title + " by " + author + "," + pages + ", not read yet";
-    }
 }
 
-let myLibrary = [];
-let bookCards = [];
+function showHideForm() {
+    form.classList.toggle("show");
+    fade.classList.toggle("show");
+}
 
-myLibrary.push(new bookData("Harry Potter and The Deathly Hallows", "J.K Rowling", 900, true));
-myLibrary.push(new bookData("Harry Potter and The Prisoner of Azkaban", "J.K Rowling", 900, true));
-myLibrary.push(new bookData("Harry Potter and The Order of the Pheonix", "J.K Rowling", 900, false));
-myLibrary.push(new bookData("Harry Potter and The Chamber of Secrets", "J.K Rowling", 900, true));
+function removeFunc(index) {
+    myLibrary.splice(index, 1);
+    sessionStorage.setItem("sessionLibrary", JSON.stringify(myLibrary));
+    booksSection.innerHTML = "";
+    myLibrary.forEach(addBook);
+}
 
+let numberOfRecords = 0;
+function addNewBook() {
+    const title = document.querySelector("#title").value;
+    const author = document.querySelector("#author").value;
+    const pages = document.querySelector("#pages").value;
+    const haveRead = document.querySelector(".checkbox").checked;
 
-const booksSection = document.querySelector(".booksSection");
+    if(title && author && pages) {
+        let sessionLibrary = [];
+        if(sessionStorage.getItem("sessionLibrary"))
+            sessionLibrary = JSON.parse(sessionStorage.getItem("sessionLibrary"));
+        sessionLibrary.push(new bookData(title, author, pages, haveRead));
+        sessionStorage.setItem("sessionLibrary", JSON.stringify(sessionLibrary));
+        showHideForm();
+    }  
+}
+
+let myLibrary = JSON.parse(sessionStorage.getItem("sessionLibrary"));
 myLibrary.forEach(addBook);
+function addBook(bookData, index) {
 
-
-function addBook(bookData) {
+    function haveReadFunc() {
+        if(bookData.haveRead) {
+            haveRead.style.color = "yellowgreen";
+            return "Have read";
+        }else{
+            haveRead.style.color = "tomato";
+            return "Haven't read";
+        }
+    }
 
     const bookCard = document.createElement("div");
     bookCard.className = "bookCard"
-    booksSection.appendChild(bookCard);
-    bookCards.push(bookCard);
     
     const buttons = document.createElement("div");
     buttons.className = "buttons";
 
     const toggle = document.createElement("img");
-    toggle.src = "images/toggle.png";
     toggle.className = "toggle";
-    buttons.appendChild(toggle);
+    toggle.src = "images/toggle.png";
+    toggle.onclick = () => {
+        bookData.haveRead = !bookData.haveRead;
+        sessionStorage.setItem("sessionLibrary", JSON.stringify(myLibrary));
+        haveRead.innerHTML = haveReadFunc();
+    };
 
     const remove = document.createElement("img");
-    remove.src = "images/remove.png";
     remove.className = "remove";
-    buttons.appendChild(remove);
+    remove.src = "images/remove.png";
+    remove.onclick = () => removeFunc(index);
     
     const title = document.createElement("h2");
     const author = document.createElement("h3");
@@ -52,24 +86,14 @@ function addBook(bookData) {
     title.innerHTML = bookData.title;
     author.innerHTML = "by " + bookData.author;
     pages.innerHTML = bookData.pages + " pages";
-    if(bookData.haveRead) {
-        haveRead.innerHTML = "Have read";
-        haveRead.style.color = "yellowgreen";
-    }else{
-        haveRead.innerHTML = "Haven't read";
-        haveRead.style.color = "tomato";
-    }
-
+    haveRead.innerHTML = haveReadFunc();
+    
+    buttons.appendChild(toggle);
+    buttons.appendChild(remove);
     bookCard.appendChild(buttons);
     bookCard.appendChild(title);
     bookCard.appendChild(author);
     bookCard.appendChild(pages);
     bookCard.appendChild(haveRead);
-
+    booksSection.appendChild(bookCard);
 }
-
-
-
-
-
-
